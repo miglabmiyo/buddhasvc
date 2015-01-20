@@ -22,6 +22,8 @@ Buildinglogic::Buildinglogic(){
 }
 
 Buildinglogic::~Buildinglogic(){
+	base_lbs::LbsConnectorEngine::FreeLbsConnectorEngine();
+	buildingsvc_logic::DBComm::Dest();
 }
 
 bool Buildinglogic::Init(){
@@ -37,6 +39,8 @@ bool Buildinglogic::Init(){
 	base_lbs::LbsConnectorEngine::Create(base_lbs::IMPL_BAIDU);
 	base_lbs::LbsConnector* engine = base_lbs::LbsConnectorEngine::GetLbsConnectorEngine();
 	engine->Init(config->mysql_db_list_);
+
+	buildingsvc_logic::DBComm::Init(config->mysql_db_list_);
     return true;
 }
 

@@ -51,10 +51,12 @@ buddha_strerror(int error_code){
 		  return BOOK_TOKEN_STR;
 	  case ACTIVITY_ID_LACK:
 		  return ACTIVITY_ID_LACK_STR;
-	  case ACTIVITY_ID_LACK:
-		  return ACTIVITY_ID_LACK_STR;
 	  case INTRO_ID_LACK:
 		  return INTRO_ID_LACK_STR;
+	  case BOOK_NAME_LACK:
+		  return BOOK_NAME_LACK_STR;
+	  case BOOK_HASH_NAME_LACK:
+		  return BOOK_HASH_NAME_LACK_STR;
 	}
 }
 

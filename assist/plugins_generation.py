@@ -286,11 +286,11 @@ if __name__ == '__main__':
         sys.setdefaultencoding('utf-8')
     print sys.getdefaultencoding()
     
-    path = "./../plugins/msgsvc/"
-    name = "msg"
-    file = "msg"
-    project = "msgsvc"
-    workspace = "migfm"
+    path = "./../plugins/robotsvc/"
+    name = "robot"
+    file = "robot"
+    project = "robotsvc"
+    workspace = "buddha"
     
     generation_init_head(workspace,project,file,name,path)
     generation_logic_head(workspace,project,file,name,path)

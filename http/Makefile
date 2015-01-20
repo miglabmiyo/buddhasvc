@@ -52,7 +52,7 @@ OUTPUT_FILE = /var/www/cgi-bin/buddha
 #############################################################################################################################
 all: clean proc delete-temp-file
 
-proc: otherproc userproc findproc buildproc bookproc activitiesproc introproc
+proc: otherproc userproc findproc buildproc bookproc activitiesproc introproc robotproc
 
 	
 ######################otherproc###############################################
@@ -67,6 +67,19 @@ checkapi.fcgi: checkapi.o $(POBJ)
 
 checkapi.o:
 	$(COMPILE) .$(OTHERPROC_PATH)$(OTJERPROC_VERSION)/checkapi/checkapi.cc
+	
+######################robotproc###############################################
+ROBOTPROC_PATH = /robot
+OTJERPROC_VERSION = /1
+robotproc:bookcollection.fcgi
+
+bookcollection.fcgi: bookcollection.o $(POBJ)
+	$(LINKALL) -o $(OUTPUT_FILE)$(ROBOTPROC_PATH)$(OTJERPROC_VERSION)/bookcollection.fcgi
+	
+### 编译
+
+bookcollection.o:
+	$(COMPILE) .$(ROBOTPROC_PATH)$(OTJERPROC_VERSION)/bookcollection/bookcollection.cc
 	
 ######################buildproc###############################################
 BUILDPROC_PATH = /build

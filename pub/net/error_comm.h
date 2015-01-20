@@ -31,8 +31,11 @@ enum errorcode{
 	BOOK_ID_LACK = -1118,
 	BOOK_TOKEN = -1119,
 	ACTIVITY_ID_LACK = -1120,
-	INTRO_ID_LACK = -1121
-
+	INTRO_ID_LACK = -1121,
+	BOOK_NAME_LACK = -1122,
+	BOOK_HASH_NAME_LACK = -1123,
+	BOOK_INTRO_LACK = -1124,
+	BOOK_COVER_LACK = -1125
 };
 
 
@@ -59,6 +62,10 @@ enum errorcode{
 #define BOOK_TOKEN_STR                    "缺少购买凭据"
 #define ACTIVITY_ID_LACK_STR              "缺少活动ID"
 #define INTRO_ID_LACK_STR                 "缺少介绍ID"
+#define BOOK_NAME_LACK_STR                "缺少书名"
+#define BOOK_HASH_NAME_LACK_STR           "缺少书名HASH"
+#define BOOK_INTRO_LACK_STR               "缺少书介绍"
+#define BOOK_COVER_LACK_STR               "缺少封面"
 
 
 const char*

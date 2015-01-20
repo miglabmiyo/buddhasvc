@@ -24,6 +24,8 @@ Activitylogic::Activitylogic(){
 }
 
 Activitylogic::~Activitylogic(){
+	activitysvc_logic::DBComm::Dest();
+	base_lbs::LbsConnectorEngine::FreeLbsConnectorEngine();
 }
 
 bool Activitylogic::Init(){

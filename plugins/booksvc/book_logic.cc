@@ -19,6 +19,7 @@ Booklogic::Booklogic(){
 }
 
 Booklogic::~Booklogic(){
+	booksvc_logic::DBComm::Dest();
 }
 
 bool Booklogic::Init(){

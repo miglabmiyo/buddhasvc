@@ -22,6 +22,7 @@ Intrologic::Intrologic(){
 }
 
 Intrologic::~Intrologic(){
+	introsvc_logic::DBComm::Dest();
 }
 
 bool Intrologic::Init(){
