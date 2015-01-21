@@ -3,7 +3,7 @@
 #include "net/find_comm_head.h"
 #include "common.h"
 
-
+#define DEFAULT_CONFIG_PATH     "./plugins/findsvc/findsvc_config.xml"
 namespace findsvc_logic{
 
 class Findlogic{

@@ -1,11 +1,12 @@
 #include "find_logic.h"
+#include "find_basic_info.h"
+#include "db_comm.h"
 #include "logic/logic_unit.h"
 #include "logic/logic_infos.h"
-#include "lbs/lbs_connector.h"
-#include "lbs/lbs_logic_unit.h"
 #include "basic/scoped_ptr.h"
 #include "net/operator_code.h"
 #include "net/error_comm.h"
+#include "net/find_comm_head.h"
 #include "logic/logic_comm.h"
 #include "config/config.h"
 #include "common.h"
@@ -24,7 +25,16 @@ Findlogic::~Findlogic(){
 }
 
 bool Findlogic::Init(){
-    return true;
+	bool r = false;
+	std::string path = DEFAULT_CONFIG_PATH;
+	config::FileConfig* config = config::FileConfig::GetFileConfig();
+	if(config==NULL){
+		return false;
+	}
+	r = config->LoadConfig(path);
+
+	findsvc_logic::DBComm::Init(config->mysql_db_list_);
+	return true;
 }
 
 Findlogic*
@@ -143,6 +153,7 @@ bool Findlogic::FindBuilding(struct server *srv,const int socket,netcomm_recv::N
 		send_error(error_code,socket);
 		return false;
 	}
+
 	std::string test_content = "{\"result\": {\"nearbuild\": [{\"basic\": {\"id\": 11,\"name\": \"四季青儿童服装市场\",\"pic\": \"http://tp1.sinaimg.cn/1215434384/50/5693231554/1\",\"type\": 5}, \"location\": {\"address\": \"采荷支路8号(采荷大厦对面)\",\"city\": \"杭州市\",\"distance\": 1605.9234795394068,\"latitude\": 30.257029,\"longitude\": 120.202853}},{\"basic\": {\"id\": 3,\"name\": \"清真寺\",\"pic\": \"http://tp1.sinaimg.cn/1215434384/50/5693231554/1\",\"type\": 1},\"location\": {\"address\": \"运河东路附近\",\"city\": \"杭州市\",\"distance\": 2461.4142861640266,\"latitude\": 30.280609,\"longitude\": 120.226083}},{\"basic\": {\"id\": 8,\"name\": \"杭州寿康永素食餐饮有限公司\",\"pic\": \"http://tp1.sinaimg.cn/1215434384/50/5693231554/1\",\"type\": 3 },\"location\": {\"address\": \"上城区延安南路38号(近惠民路)\",\"city\": \"杭州市\",\"distance\": 4785.142388967215,\"latitude\": 30.247475,\"longitude\": 120.171456 } }, {\"basic\": {\"id\": 4,\"name\": \"博库书城(天目山店)\",\"pic\": \"http://tp1.sinaimg.cn/1215434384/50/5693231554/1\",\"type\": 2}, \"location\": {\"address\": \"天目山路38号\",\"city\": \"杭州市\",\"distance\": 6219.8927696060855,\"latitude\": 30.278738,\"longitude\": 120.158669}}]},\"status\": 1}";
 	base_logic::LogicComm::SendFull(socket,test_content.c_str(),test_content.length());
 	return true;
@@ -157,8 +168,19 @@ bool Findlogic::FindBook(struct server *srv,const int socket,netcomm_recv::NetBa
 		send_error(error_code,socket);
 		return false;
 	}
-	std::string test_content = "{\"result\": { \"hot\": [{\"id\": 10001,\"name\": \"天地战佛\", \"pic\": \"http://pic.tyread.com:8082/content_T1wtDTB7ZC1RyoIntQ_240x320.jpg\",\"summary\": \"他，横空出世，改变了一代大陆的格局；他，清爽的短发，一身青色布衣，行走在这片天地间\",\"type\": 5},{\"id\": 10002,\"name\": \"净光欢喜佛\",\"pic\": \"http://pic.tyread.com:8082/content_T1StETBbKm1RyoIntQ_240x320.jpg\",\"summary\": \"他被卷入哥哥夺取佛主尊位的阴谋中，天生玄阳之体的他如何向世人揭开自己才是真佛\",\"type\": 5},{\"id\": 10003,\"name\": \"佛魔间\",\"pic\": \"http://pic.tyread.com:8082/content_T1jthTBsb_1RyoIntQ_240x320.jpg\",\"summary\": \"相传三百年前，在一座漂移岛上有一座神祗，此神祗存有大能传授修真之决学\",\"type\": 5}],\"scriptures\": [{ \"id\": 10004,\"name\": \"万佛吼\",\"pic\": \"http://pic.tyread.com:8082/content_T1LyYTB4Ds1RyoIntQ_240x320.jpg\",\"summary\": \"风云再起，少侠父子鹰崛起江湖，以杀手的身份横空出世\",\"type\": 5},{\"id\": 10005,\"name\": \"欲佛凌天\",\"pic\": \"http://pic.tyread.com:8082/content_T10tCTBXCs1RyoIntQ_240x320.jpg\",\"summary\": \"蛮荒大陆，万族林立，人族存于夹缝之中。猥琐男机缘巧得佛界舍利\",\"type\": 5},{\"id\": 10006,\"name\": \"千佛临凡\",\"pic\": \"http://pic.tyread.com:8082/content_T1Jt_TBvL_1RyoIntQ_240x320.jpg\",\"summary\": \"远古妖兽，蛮荒传说，瑰丽壮阔的仙道大世界风起云涌，无数的天才武者\",\"type\": 5 }],\"ritual\": [{\"id\": 10007,\"name\": \"佛道同修\",\"pic\": \"http://pic.tyread.com:8082/content_T1lRCTB7_v1RyoIntQ_240x320.jpg\",\"summary\": \"萧乾的性格从来都是这样，对于不属于自己的东西，萧乾从来都没有动过邪念\",\"type\": 5}, {\"id\": 10008,\"name\": \"异界佛修\",\"pic\": \"http://pic.tyread.com:8082/content_T1JaYTB_Y71RyoIntQ_240x320.jpg\",\"summary\": \"一个佛教徒在异界所经历的奇幻故事\",\"type\": 5},{\"id\": 10009,\"name\": \"灭世佛缘\",\"pic\": \"http://pic.tyread.com:8082/content_T1qtYTBCVT1RyoIntQ_240x320.jpg\",\"summary\": \"魔，本来无神无形。它是由万物心中欲念所出\",\"type\": 5}],\"theory\": [{\"id\": 10010,\"name\": \"你就是佛\",\"pic\": \"http://pic.tyread.com:8082/content_T1DRDTBvxX1RyoIntQ_240x320.jpg\",\"summary\": \"什么是佛？说到佛，一般人总是有一种神秘的感觉，实际上，佛虽然含有深意\",\"type\": 5}, {\"id\": 10011,\"name\": \"仙戮佛屠\",\"pic\": \"http://pic.tyread.com:8082/content_T1jyETBQA41RyoIntQ_240x320.jpg\",\"summary\": \"愿我成佛时，信我者永生长存；愿我作魔时，逆我者立入地狱\",\"type\": 5},{\"id\": 10012, \"name\": \"卡尔佛里\",\"pic\": \"http://pic.tyread.com:8082/content_T1SyJTB4Yj1RyoIntQ_240x320.jpg\",\"summary\": \"那还只前天，我听说，他们一起吃晚饭，耶稣与他十二个门徒\",\"type\": 5} ] }, \"status\": 1}";
-	base_logic::LogicComm::SendFull(socket,test_content.c_str(),test_content.length());
+	//读取推荐信息
+	std::list<findsvc_logic::FindBookInfo> list;
+	bool r = findsvc_logic::DBComm::GetBookStoreFind(list);
+
+	scoped_ptr<netcomm_send::FindBook> send_book(new netcomm_send::FindBook());
+	while(list.size()>0){
+		findsvc_logic::FindBookInfo book = list.front();
+		list.pop_front();
+		send_book->set_book(book.id(),book.type(),book.attr(),book.name(),book.pic(),book.summary());
+	}
+	send_message(socket,(netcomm_send::HeadPacket*)send_book.get());
+	//std::string test_content = "{\"result\": { \"hot\": [{\"id\": 10001,\"name\": \"天地战佛\", \"pic\": \"http://pic.tyread.com:8082/content_T1wtDTB7ZC1RyoIntQ_240x320.jpg\",\"summary\": \"他，横空出世，改变了一代大陆的格局；他，清爽的短发，一身青色布衣，行走在这片天地间\",\"type\": 5},{\"id\": 10002,\"name\": \"净光欢喜佛\",\"pic\": \"http://pic.tyread.com:8082/content_T1StETBbKm1RyoIntQ_240x320.jpg\",\"summary\": \"他被卷入哥哥夺取佛主尊位的阴谋中，天生玄阳之体的他如何向世人揭开自己才是真佛\",\"type\": 5},{\"id\": 10003,\"name\": \"佛魔间\",\"pic\": \"http://pic.tyread.com:8082/content_T1jthTBsb_1RyoIntQ_240x320.jpg\",\"summary\": \"相传三百年前，在一座漂移岛上有一座神祗，此神祗存有大能传授修真之决学\",\"type\": 5}],\"scriptures\": [{ \"id\": 10004,\"name\": \"万佛吼\",\"pic\": \"http://pic.tyread.com:8082/content_T1LyYTB4Ds1RyoIntQ_240x320.jpg\",\"summary\": \"风云再起，少侠父子鹰崛起江湖，以杀手的身份横空出世\",\"type\": 5},{\"id\": 10005,\"name\": \"欲佛凌天\",\"pic\": \"http://pic.tyread.com:8082/content_T10tCTBXCs1RyoIntQ_240x320.jpg\",\"summary\": \"蛮荒大陆，万族林立，人族存于夹缝之中。猥琐男机缘巧得佛界舍利\",\"type\": 5},{\"id\": 10006,\"name\": \"千佛临凡\",\"pic\": \"http://pic.tyread.com:8082/content_T1Jt_TBvL_1RyoIntQ_240x320.jpg\",\"summary\": \"远古妖兽，蛮荒传说，瑰丽壮阔的仙道大世界风起云涌，无数的天才武者\",\"type\": 5 }],\"ritual\": [{\"id\": 10007,\"name\": \"佛道同修\",\"pic\": \"http://pic.tyread.com:8082/content_T1lRCTB7_v1RyoIntQ_240x320.jpg\",\"summary\": \"萧乾的性格从来都是这样，对于不属于自己的东西，萧乾从来都没有动过邪念\",\"type\": 5}, {\"id\": 10008,\"name\": \"异界佛修\",\"pic\": \"http://pic.tyread.com:8082/content_T1JaYTB_Y71RyoIntQ_240x320.jpg\",\"summary\": \"一个佛教徒在异界所经历的奇幻故事\",\"type\": 5},{\"id\": 10009,\"name\": \"灭世佛缘\",\"pic\": \"http://pic.tyread.com:8082/content_T1qtYTBCVT1RyoIntQ_240x320.jpg\",\"summary\": \"魔，本来无神无形。它是由万物心中欲念所出\",\"type\": 5}],\"theory\": [{\"id\": 10010,\"name\": \"你就是佛\",\"pic\": \"http://pic.tyread.com:8082/content_T1DRDTBvxX1RyoIntQ_240x320.jpg\",\"summary\": \"什么是佛？说到佛，一般人总是有一种神秘的感觉，实际上，佛虽然含有深意\",\"type\": 5}, {\"id\": 10011,\"name\": \"仙戮佛屠\",\"pic\": \"http://pic.tyread.com:8082/content_T1jyETBQA41RyoIntQ_240x320.jpg\",\"summary\": \"愿我成佛时，信我者永生长存；愿我作魔时，逆我者立入地狱\",\"type\": 5},{\"id\": 10012, \"name\": \"卡尔佛里\",\"pic\": \"http://pic.tyread.com:8082/content_T1SyJTB4Yj1RyoIntQ_240x320.jpg\",\"summary\": \"那还只前天，我听说，他们一起吃晚饭，耶稣与他十二个门徒\",\"type\": 5} ] }, \"status\": 1}";
+	//base_logic::LogicComm::SendFull(socket,test_content.c_str(),test_content.length());
 	return true;
 
 }

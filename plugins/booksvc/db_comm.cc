@@ -54,7 +54,7 @@ bool DBComm::OnGetBooksByType(const int32 type,std::list<booksvc_logic::BookBasi
 			booksvc_logic::BookBasicInfo book;
 			if(rows[0]!=NULL)
 				book.set_id(atoll(rows[0]));
-			if(rows[0]!=NULL)
+			if(rows[1]!=NULL)
 				book.set_name(rows[1]);
 			if(rows[2]!=NULL)
 				book.set_pic(rows[2]);
